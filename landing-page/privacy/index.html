@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - sys-monitor</title>
+    <meta name="description"
+        content="Privacy policy for the sys-monitor project. No data collection, no tracking, no telemetry.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+    <!-- ── Navigation ─────────────────────────────────────────── -->
+
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="../" class="nav-brand">sys-monitor</a>
+            <button class="nav-mobile-toggle" id="nav-toggle" aria-label="Toggle navigation">
+                &#9776;
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="../">Home</a></li>
+                <li><a href="../docs">Docs</a></li>
+                <li><a href="https://github.com/youssefsz/sys-monitor-Rust" target="_blank" rel="noopener">GitHub</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ── Privacy content ────────────────────────────────────── -->
+
+    <div class="legal-page">
+        <div class="legal-content">
+
+            <h1>Privacy Policy</h1>
+            <p class="legal-updated">Last updated: February 2026</p>
+
+            <p>
+                sys-monitor is an open-source, offline terminal application. This policy explains
+                what data the application does and does not collect.
+            </p>
+
+            <h2>No data collection</h2>
+            <p>
+                sys-monitor does not collect, transmit, or store any personal data. The application
+                runs entirely on your local machine and does not make any network requests during
+                normal operation.
+            </p>
+
+            <h2>System data</h2>
+            <p>
+                sys-monitor reads system metrics (CPU usage, memory usage, process list, hostname,
+                and uptime) from your operating system's APIs. This data is used solely to render
+                the terminal interface and is never transmitted to any external server.
+            </p>
+
+            <h2>Self-update</h2>
+            <p>
+                When you run <code>sys-monitor upgrade</code>, the application makes an HTTPS
+                request to the GitHub API to check for new releases and downloads the updated
+                binary. This is the only network activity performed by sys-monitor, and it only
+                happens when you explicitly request an update.
+            </p>
+
+            <h2>Install script</h2>
+            <p>
+                The install script fetches the latest binary from GitHub Releases. This download
+                is subject to GitHub's own privacy policy. No additional data is collected by
+                the install script.
+            </p>
+
+            <h2>This website</h2>
+            <p>
+                This website is a static site. It does not use cookies, analytics, tracking pixels,
+                or any third-party scripts. No personal information is collected through this website.
+            </p>
+
+            <h2>Third-party services</h2>
+            <p>
+                The only external resources loaded by this website are fonts from Google Fonts.
+                Google Fonts is subject to Google's privacy policy.
+            </p>
+
+            <h2>Open source</h2>
+            <p>
+                The full source code of sys-monitor is available on
+                <a href="https://github.com/youssefsz/sys-monitor-Rust" target="_blank" rel="noopener">GitHub</a>.
+                You can audit the code to verify these claims.
+            </p>
+
+            <h2>Contact</h2>
+            <p>
+                For questions about this policy, you can reach the project maintainer at
+                <a href="https://youssef.tn" target="_blank" rel="noopener">youssef.tn</a>.
+            </p>
+
+        </div>
+    </div>
+
+    <!-- ── Footer ─────────────────────────────────────────────── -->
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <p class="footer-text">
+                Built by <a href="https://youssef.tn" target="_blank" rel="noopener">Youssef Dhibi</a>. MIT License.
+            </p>
+            <ul class="footer-links">
+                <li><a href="../docs">Docs</a></li>
+                <li><a href="./">Privacy</a></li>
+                <li><a href="https://github.com/youssefsz/sys-monitor-Rust" target="_blank" rel="noopener">GitHub</a>
+                </li>
+            </ul>
+        </div>
+    </footer>
+
+    <script src="../main.js"></script>
+</body>
+
+</html>

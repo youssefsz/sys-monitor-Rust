@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - sys-monitor</title>
+    <meta name="description"
+        content="Documentation for sys-monitor. Installation, usage, keybindings, configuration, and project architecture.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+    <!-- ── Navigation ─────────────────────────────────────────── -->
+
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="../" class="nav-brand">sys-monitor</a>
+            <button class="nav-mobile-toggle" id="nav-toggle" aria-label="Toggle navigation">
+                &#9776;
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="../">Home</a></li>
+                <li><a href="./" class="active">Docs</a></li>
+                <li><a href="https://github.com/youssefsz/sys-monitor-Rust" target="_blank" rel="noopener">GitHub</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ── Docs layout ────────────────────────────────────────── -->
+
+    <div class="container docs-layout">
+
+        <!-- Sidebar -->
+        <aside class="docs-sidebar">
+            <p class="docs-sidebar-title">Documentation</p>
+            <ul class="docs-nav">
+                <li><a href="#overview" class="active">Overview</a></li>
+                <li><a href="#installation">Installation</a></li>
+                <li><a href="#usage">Usage</a></li>
+                <li><a href="#keybindings">Keybindings</a></li>
+                <li><a href="#panels">Panels</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#tech-stack">Tech stack</a></li>
+                <li><a href="#contributing">Contributing</a></li>
+            </ul>
+        </aside>
+
+        <!-- Content -->
+        <main class="docs-content">
+
+            <h1 id="overview">sys-monitor</h1>
+            <p class="docs-subtitle">A fast, minimal terminal system monitor built with Rust.</p>
+
+            <p>
+                sys-monitor is a terminal-native system monitor that gives developers instant clarity
+                about their machine's performance. It shows CPU usage, memory consumption, and running
+                processes in a clean, keyboard-driven interface.
+            </p>
+
+            <p>
+                It is not a clone of htop, btop, or glances. It is a minimal, focused performance
+                dashboard built for developers who value clarity and performance.
+            </p>
+
+            <!-- ── Installation ─────────────────────────────────────── -->
+
+            <h2 id="installation">Installation</h2>
+
+            <h3>macOS and Linux</h3>
+            <p>Run the following command in your terminal:</p>
+            <div class="code-block">
+                <button class="code-copy-btn">Copy</button>
+                <pre>curl -sSL https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/main/install.sh | bash</pre>
+            </div>
+
+            <p>
+                The install script detects your operating system and architecture, downloads the
+                correct binary from the latest GitHub release, and installs it to <code>/usr/local/bin</code>.
+            </p>
+
+            <h3>Windows</h3>
+            <p>Open PowerShell and run:</p>
+            <div class="code-block">
+                <button class="code-copy-btn">Copy</button>
+                <pre>powershell -Command "irm https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/main/install.ps1 | iex"</pre>
+            </div>
+
+            <h3>From source</h3>
+            <p>Requires Rust 1.85 or later.</p>
+            <div class="code-block">
+                <button class="code-copy-btn">Copy</button>
+                <pre>git clone https://github.com/youssefsz/sys-monitor-Rust.git
+cd sys-monitor-Rust
+cargo build --release
+cp target/release/sys-monitor /usr/local/bin/</pre>
+            </div>
+
+            <h3>Self-update</h3>
+            <p>sys-monitor can update itself to the latest version:</p>
+            <div class="code-block">
+                <button class="code-copy-btn">Copy</button>
+                <pre>sys-monitor upgrade</pre>
+            </div>
+
+            <!-- ── Usage ─────────────────────────────────────────────── -->
+
+            <h2 id="usage">Usage</h2>
+
+            <p>Launch sys-monitor with default settings:</p>
+            <div class="code-block">
+                <button class="code-copy-btn">Copy</button>
+                <pre>sys-monitor</pre>
+            </div>
+
+            <p>Available options:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Flag</th>
+                        <th>Description</th>
+                        <th>Default</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>--refresh-rate</code></td>
+                        <td>Refresh interval in milliseconds</td>
+                        <td>250</td>
+                    </tr>
+                    <tr>
+                        <td><code>--no-per-core</code></td>
+                        <td>Hide per-core CPU bars</td>
+                        <td>off</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Examples</h3>
+            <div class="code-block">
+                <button class="code-copy-btn">Copy</button>
+                <pre>sys-monitor                      # launch with defaults
+sys-monitor --refresh-rate 500   # slower refresh
+sys-monitor --no-per-core        # aggregate CPU only</pre>
+            </div>
+
+            <!-- ── Keybindings ───────────────────────────────────────── -->
+
+            <h2 id="keybindings">Keybindings</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>q</code> / <code>Esc</code></td>
+                        <td>Quit</td>
+                    </tr>
+                    <tr>
+                        <td><code>j</code> / <code>k</code></td>
+                        <td>Navigate process table up/down</td>
+                    </tr>
+                    <tr>
+                        <td><code>g</code> / <code>G</code></td>
+                        <td>Jump to first / last process</td>
+                    </tr>
+                    <tr>
+                        <td><code>s</code></td>
+                        <td>Cycle sort column (CPU, MEM, PID, Name)</td>
+                    </tr>
+                    <tr>
+                        <td><code>S</code></td>
+                        <td>Reverse sort order</td>
+                    </tr>
+                    <tr>
+                        <td><code>/</code></td>
+                        <td>Filter processes by name</td>
+                    </tr>
+                    <tr>
+                        <td><code>1</code></td>
+                        <td>Toggle per-core CPU view</td>
+                    </tr>
+                    <tr>
+                        <td><code>r</code></td>
+                        <td>Force refresh</td>
+                    </tr>
+                    <tr>
+                        <td><code>?</code></td>
+                        <td>Show help overlay</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ── Panels ────────────────────────────────────────────── -->
+
+            <h2 id="panels">Panels</h2>
+
+            <h3>Header bar</h3>
+            <p>
+                The header bar shows the application name, hostname, macOS version, uptime,
+                and the 1-minute load average. It is always visible at the top of the screen.
+            </p>
+
+            <h3>CPU panel</h3>
+            <p>
+                Displays an aggregate CPU usage bar with color-coded fill based on load level.
+                Press <code>1</code> to toggle the per-core breakdown, which shows individual
+                load bars for each CPU core.
+            </p>
+
+            <h3>Memory panel</h3>
+            <p>
+                Shows RAM usage and swap usage with percentage bars and human-readable values
+                (e.g., "13.2 / 16.0 GB"). Provides a quick overview of memory pressure.
+            </p>
+
+            <h3>Process table</h3>
+            <p>
+                Lists the top processes sorted by CPU usage by default. Each row shows the
+                PID, process name, CPU percentage, and memory percentage. The table is scrollable,
+                sortable, and filterable.
+            </p>
+
+            <!-- ── Architecture ──────────────────────────────────────── -->
+
+            <h2 id="architecture">Architecture</h2>
+
+            <div class="code-block">
+                <button class="code-copy-btn">Copy</button>
+                <pre>src/
+  main.rs          Entry point, CLI parsing, terminal setup
+  app.rs           Application state and input handling
+  event.rs         Event polling (keyboard, tick, resize)
+  system/          Data collection (CPU, memory, processes, host)
+  ui/              Ratatui widgets (header, CPU, memory, processes, help)
+  theme/           Color palette and style definitions
+  util/            Formatting helpers (bytes, uptime, percentages)</pre>
+            </div>
+
+            <p>
+                The application uses a single-threaded, polling-based event loop. On each tick,
+                system data is collected via the <code>sysinfo</code> crate, application state is
+                updated, and the UI is rendered using Ratatui. Keyboard events are handled
+                synchronously between render frames.
+            </p>
+
+            <!-- ── Tech stack ────────────────────────────────────────── -->
+
+            <h2 id="tech-stack">Tech stack</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Crate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>TUI framework</td>
+                        <td>ratatui 0.30</td>
+                    </tr>
+                    <tr>
+                        <td>Terminal backend</td>
+                        <td>crossterm 0.29</td>
+                    </tr>
+                    <tr>
+                        <td>System metrics</td>
+                        <td>sysinfo 0.38</td>
+                    </tr>
+                    <tr>
+                        <td>CLI parsing</td>
+                        <td>clap 4.5</td>
+                    </tr>
+                    <tr>
+                        <td>macOS APIs</td>
+                        <td>libc 0.2</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ── Contributing ──────────────────────────────────────── -->
+
+            <h2 id="contributing">Contributing</h2>
+
+            <p>
+                Contributions are welcome. Please open an issue before submitting large changes.
+            </p>
+
+            <ol>
+                <li>Fork the repository</li>
+                <li>Create a feature branch (<code>git checkout -b feature/my-change</code>)</li>
+                <li>Commit your changes</li>
+                <li>Open a pull request</li>
+            </ol>
+
+            <p>
+                The project is licensed under the MIT license. See the
+                <a href="https://github.com/youssefsz/sys-monitor-Rust/blob/main/LICENSE" target="_blank"
+                    rel="noopener">LICENSE</a>
+                file for details.
+            </p>
+
+        </main>
+    </div>
+
+    <!-- ── Footer ─────────────────────────────────────────────── -->
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <p class="footer-text">
+                Built by <a href="https://youssef.tn" target="_blank" rel="noopener">Youssef Dhibi</a>. MIT License.
+            </p>
+            <ul class="footer-links">
+                <li><a href="./">Docs</a></li>
+                <li><a href="../privacy">Privacy</a></li>
+                <li><a href="https://github.com/youssefsz/sys-monitor-Rust" target="_blank" rel="noopener">GitHub</a>
+                </li>
+            </ul>
+        </div>
+    </footer>
+
+    <script src="../main.js"></script>
+</body>
+
+</html>

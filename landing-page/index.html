@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sys-monitor - A modern terminal system monitor</title>
+    <meta name="description"
+        content="A fast, minimal terminal system monitor built with Rust. Real-time CPU, memory, and process monitoring with a clean interface.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ── Navigation ─────────────────────────────────────────── -->
+
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="./" class="nav-brand">sys-monitor</a>
+            <button class="nav-mobile-toggle" id="nav-toggle" aria-label="Toggle navigation">
+                &#9776;
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="./" class="active">Home</a></li>
+                <li><a href="./docs">Docs</a></li>
+                <li><a href="https://github.com/youssefsz/sys-monitor-Rust" target="_blank" rel="noopener">GitHub</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ── Hero ───────────────────────────────────────────────── -->
+
+    <section class="hero">
+        <div class="container hero-content">
+
+            <p class="hero-tag">Terminal system monitor</p>
+
+            <h1>Know your system.<br><span>In seconds.</span></h1>
+
+            <p class="hero-desc">
+                A fast, minimal terminal system monitor built with Rust and Ratatui.
+                Real-time CPU, memory, and process monitoring with a clean, keyboard-driven interface.
+                No bloat. No GUI. Just signal.
+            </p>
+
+            <!-- Install commands -->
+            <div class="install-block">
+                <div class="install-tabs">
+                    <button class="install-tab active" data-target="cmd-unix" id="tab-unix">macOS / Linux</button>
+                    <button class="install-tab" data-target="cmd-windows" id="tab-windows">Windows</button>
+                </div>
+
+                <div class="install-cmd" id="cmd-unix">
+                    <code
+                        id="code-unix">curl -sSL https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/main/install.sh | bash</code>
+                    <button class="copy-btn" data-clipboard="code-unix">Copy</button>
+                </div>
+
+                <div class="install-cmd install-cmd-hidden" id="cmd-windows">
+                    <code
+                        id="code-windows">powershell -Command "irm https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/main/install.ps1 | iex"</code>
+                    <button class="copy-btn" data-clipboard="code-windows">Copy</button>
+                </div>
+            </div>
+
+            <!-- Links -->
+            <div class="hero-links">
+                <a href="./docs">Read the docs</a>
+                <a href="https://github.com/youssefsz/sys-monitor-Rust" target="_blank" rel="noopener">View on
+                    GitHub</a>
+                <a href="https://github.com/youssefsz/sys-monitor-Rust/releases" target="_blank"
+                    rel="noopener">Releases</a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ── Features ───────────────────────────────────────────── -->
+
+    <section class="features section">
+        <div class="features-grid">
+
+            <div class="feature-card">
+                <h3>CPU Monitoring</h3>
+                <p>Aggregate usage bar with optional per-core breakdown. Color-coded severity from idle to critical.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Memory Panel</h3>
+                <p>RAM and swap usage with human-readable values. See exactly what is consuming your system memory.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Process Table</h3>
+                <p>Top processes sorted by CPU or memory. Filterable by name. Keyboard-driven navigation and sorting.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Host Info</h3>
+                <p>Hostname, OS version, uptime, and load averages at a glance. Always visible in the header bar.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Keyboard First</h3>
+                <p>Full navigation without a mouse. Sort, filter, scroll, and quit from the keyboard. Press ? for help.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Built with Rust</h3>
+                <p>Sub-millisecond render loop. Less than 15 MB memory footprint. Startup in under 200ms.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ── Footer ─────────────────────────────────────────────── -->
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <p class="footer-text">
+                Built by <a href="https://youssef.tn" target="_blank" rel="noopener">Youssef Dhibi</a>. MIT License.
+            </p>
+            <ul class="footer-links">
+                <li><a href="./docs">Docs</a></li>
+                <li><a href="./privacy">Privacy</a></li>
+                <li><a href="https://github.com/youssefsz/sys-monitor-Rust" target="_blank" rel="noopener">GitHub</a>
+                </li>
+            </ul>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+
+</html>
