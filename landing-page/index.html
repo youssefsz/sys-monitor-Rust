@@ -69,47 +69,56 @@
 
     <section class="hero">
         <div class="container hero-content">
+            <div class="hero-text">
+                <p class="hero-tag">Terminal system monitor</p>
 
-            <p class="hero-tag">Terminal system monitor</p>
+                <h1>Know your system.<br><span>In seconds.</span></h1>
 
-            <h1>Know your system.<br><span>In seconds.</span></h1>
+                <p class="hero-desc">
+                    A fast, minimal terminal system monitor built with Rust and Ratatui.
+                    Real-time CPU, memory, and process monitoring with a clean, keyboard-driven interface.
+                    No bloat. No GUI. Just signal.
+                </p>
 
-            <p class="hero-desc">
-                A fast, minimal terminal system monitor built with Rust and Ratatui.
-                Real-time CPU, memory, and process monitoring with a clean, keyboard-driven interface.
-                No bloat. No GUI. Just signal.
-            </p>
-
-            <!-- Install commands -->
-            <div class="install-block">
-                <div class="install-header">
-                    <div class="install-tabs">
-                        <button class="install-tab active" data-target="cmd-unix" id="tab-unix">macOS / Linux</button>
-                        <button class="install-tab" data-target="cmd-windows" id="tab-windows">Windows</button>
+                <!-- Install commands -->
+                <div class="install-block">
+                    <div class="install-header">
+                        <div class="install-tabs">
+                            <button class="install-tab active" data-target="cmd-unix" id="tab-unix">macOS /
+                                Linux</button>
+                            <button class="install-tab" data-target="cmd-windows" id="tab-windows">Windows</button>
+                        </div>
+                        <button class="view-script-link" id="view-script-btn">View full script</button>
                     </div>
-                    <button class="view-script-link" id="view-script-btn">View full script</button>
+
+                    <div class="install-cmd" id="cmd-unix">
+                        <code
+                            id="code-unix">curl -sSL https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/master/install.sh | bash</code>
+                        <button class="copy-btn" data-clipboard="code-unix">Copy</button>
+                    </div>
+
+                    <div class="install-cmd install-cmd-hidden" id="cmd-windows">
+                        <code
+                            id="code-windows">powershell -Command "irm https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/master/install.ps1 | iex"</code>
+                        <button class="copy-btn" data-clipboard="code-windows">Copy</button>
+                    </div>
                 </div>
 
-                <div class="install-cmd" id="cmd-unix">
-                    <code
-                        id="code-unix">curl -sSL https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/master/install.sh | bash</code>
-                    <button class="copy-btn" data-clipboard="code-unix">Copy</button>
-                </div>
-
-                <div class="install-cmd install-cmd-hidden" id="cmd-windows">
-                    <code
-                        id="code-windows">powershell -Command "irm https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/master/install.ps1 | iex"</code>
-                    <button class="copy-btn" data-clipboard="code-windows">Copy</button>
+                <!-- Links -->
+                <div class="hero-links">
+                    <a href="./docs">Read the docs</a>
+                    <a href="https://github.com/youssefsz/sys-monitor-Rust" target="_blank" rel="noopener">View on
+                        GitHub</a>
+                    <a href="https://github.com/youssefsz/sys-monitor-Rust/releases" target="_blank"
+                        rel="noopener">Releases</a>
                 </div>
             </div>
 
-            <!-- Links -->
-            <div class="hero-links">
-                <a href="./docs">Read the docs</a>
-                <a href="https://github.com/youssefsz/sys-monitor-Rust" target="_blank" rel="noopener">View on
-                    GitHub</a>
-                <a href="https://github.com/youssefsz/sys-monitor-Rust/releases" target="_blank"
-                    rel="noopener">Releases</a>
+            <!-- Preview Image -->
+            <div class="hero-visual-wrapper">
+                <div class="hero-visual" id="hero-visual">
+                    <img src="imgs/preview.png" alt="sys-monitor terminal preview">
+                </div>
             </div>
 
         </div>

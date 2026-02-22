@@ -33,7 +33,7 @@
     --mono: "JetBrains Mono", "Fira Code", "SF Mono", "Cascadia Code", "Consolas", monospace;
     --sans: "Inter", "Helvetica Neue", Arial, sans-serif;
 
-    --max-w: 960px;
+    --max-w: 1080px;
     --gutter: 24px;
 }
 
@@ -208,6 +208,58 @@ pre {
 
 .hero-content {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+    padding-top: 48px;
+    padding-bottom: 48px;
+}
+
+.hero-text {
+    width: 100%;
+    max-width: 720px;
+    min-width: 0;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.hero-visual-wrapper {
+    width: 100%;
+    margin: 0 auto;
+    perspective: 1200px;
+    /* Provides the 3D space */
+}
+
+.hero-visual {
+    position: relative;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-surface);
+    overflow: hidden;
+    box-shadow: 6px 6px 0 var(--yellow);
+
+    /* Animation defaults driven by JS */
+    --scroll-progress: 0;
+
+    transform:
+        rotateX(calc((1 - var(--scroll-progress)) * 20deg)) scale(calc(0.85 + (var(--scroll-progress) * 0.15)));
+
+    transform-origin: top center;
+    will-change: transform;
+    transition: box-shadow 0.2s;
+}
+
+.hero-visual:hover {
+    box-shadow: 9px 9px 0 var(--yellow);
+}
+
+.hero-visual img {
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
 .hero-tag {
@@ -238,7 +290,9 @@ pre {
 /* ── Install block ─────────────────────────────────────────────── */
 
 .install-block {
+    width: 100%;
     margin-bottom: 48px;
+    text-align: left;
 }
 
 .install-header {
@@ -345,6 +399,7 @@ pre {
     display: flex;
     gap: 24px;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 .hero-links a {
@@ -827,6 +882,10 @@ pre {
         min-height: auto;
         padding-top: 100px;
         padding-bottom: 60px;
+    }
+
+    .hero-content {
+        gap: 48px;
     }
 
     .hero-links {

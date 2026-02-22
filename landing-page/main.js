@@ -175,6 +175,38 @@
         }
     }
 
+    // ── Hero Visual Parallax Animation ─────────────────────────────
+
+    var heroVisual = document.getElementById("hero-visual");
+    if (heroVisual) {
+        window.addEventListener("scroll", function () {
+            // Get the geometry
+            var rect = heroVisual.getBoundingClientRect();
+            var windowHeight = window.innerHeight;
+
+            // Calculate progress: 0 when top enters view, 1 when it hits the top third of the screen
+            // The image starts out tilted and gets flat/normal as it gets to the center
+            var startY = windowHeight;
+            var endY = windowHeight * 0.3;
+
+            var progress = 0;
+            if (rect.top <= endY) {
+                progress = 1;
+            } else if (rect.top < startY) {
+                progress = 1 - ((rect.top - endY) / (startY - endY));
+            }
+
+            // Clamp progress between 0 and 1
+            progress = Math.max(0, Math.min(1, progress));
+
+            // Apply it as a Custom Property for CSS to use
+            heroVisual.style.setProperty("--scroll-progress", progress);
+        }, { passive: true });
+
+        // Trigger once on load to set initial state
+        window.dispatchEvent(new Event("scroll"));
+    }
+
     // ── Script Viewer Modal ──────────────────────────────────────
 
     var scriptModal = document.getElementById("script-modal");
