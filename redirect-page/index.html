@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting - sys-monitor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ── Tokens ── */
+        :root {
+            --bg: #0a0a0a;
+            --bg-surface: #111111;
+            --bg-raised: #1a1a1a;
+            --border: #2a2a2a;
+            --border-bold: #333333;
+
+            --yellow: #f5d800;
+            --yellow-dim: #bfa600;
+            --yellow-hover: #ffe63b;
+
+            --text: #e0e0e0;
+            --text-dim: #888888;
+            --text-muted: #555555;
+
+            --mono: "JetBrains Mono", "Fira Code", "SF Mono", "Cascadia Code", "Consolas", monospace;
+            --sans: "Inter", "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* ── Base ── */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--sans);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* ── Container ── */
+        .redirect-container {
+            background: var(--bg-surface);
+            border: 2px solid var(--yellow);
+            padding: 48px;
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+            border-radius: 6px;
+            transition: border-color 0.2s;
+        }
+
+        .redirect-container:hover {
+            border-color: var(--yellow-hover);
+        }
+
+        .logo {
+            width: 64px;
+            height: auto;
+            margin: 0 auto 24px;
+            display: block;
+        }
+
+        .blink-text {
+            font-family: var(--mono);
+            color: var(--yellow);
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .cursor {
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .destination {
+            color: var(--text-dim);
+            font-family: var(--mono);
+            font-size: 0.9rem;
+            margin-bottom: 32px;
+        }
+
+        .destination span {
+            color: var(--text);
+        }
+
+        /* ── Progress Bar ── */
+        .progress-bar-container {
+            background: var(--bg);
+            border: 1px solid var(--border-bold);
+            height: 12px;
+            width: 100%;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--yellow);
+            transition: width 0.1s linear;
+        }
+
+        .timeout {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-family: var(--mono);
+            margin-bottom: 32px;
+        }
+
+        .timeout span {
+            color: var(--yellow-dim);
+        }
+
+        /* ── Button ── */
+        .manual-redirect {
+            display: inline-block;
+            padding: 12px 24px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.15s;
+            border-radius: 4px;
+        }
+
+        .manual-redirect:hover {
+            background: var(--bg-raised);
+            border-color: var(--yellow);
+            color: var(--yellow);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="redirect-container">
+        <img src="logo.png" alt="sys-monitor logo" class="logo">
+        <h1 class="blink-text">Redirecting<span class="cursor">_</span></h1>
+        <p class="destination">Destination: <span>sys-monitor.youssef.tn</span></p>
+
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <p class="timeout">Redirecting in <span id="countdown">4</span>s</p>
+
+        <a href="https://sys-monitor.youssef.tn" class="manual-redirect">Manual Redirect</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const targetUrl = 'https://sys-monitor.youssef.tn';
+            const totalTime = 4000; // 4 seconds target
+            const intervalTime = 50;
+            let elapsedTime = 0;
+
+            const progressBar = document.getElementById('progress-bar');
+            const countdownEl = document.getElementById('countdown');
+
+            const interval = setInterval(() => {
+                elapsedTime += intervalTime;
+
+                // Update progress bar width
+                const progressPercentage = Math.min((elapsedTime / totalTime) * 100, 100);
+                progressBar.style.width = `${progressPercentage}%`;
+
+                // Update countdown text
+                const remainingTime = Math.ceil((totalTime - elapsedTime) / 1000);
+                countdownEl.textContent = remainingTime > 0 ? remainingTime : 0;
+
+                if (elapsedTime >= totalTime) {
+                    clearInterval(interval);
+                    window.location.href = targetUrl;
+                }
+            }, intervalTime);
+        });
+    </script>
+</body>
+
+</html>
