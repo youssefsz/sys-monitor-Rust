@@ -12,7 +12,16 @@
 
     if (navToggle && navLinks) {
         navToggle.addEventListener("click", function () {
-            navLinks.classList.toggle("open");
+            var isOpen = navLinks.classList.toggle("open");
+            navToggle.innerHTML = isOpen ? "&times;" : "&#9776;";
+            // Keep font size consistent when changing character
+            if (isOpen) {
+                navToggle.style.fontSize = "2rem";
+                navToggle.style.lineHeight = "1";
+            } else {
+                navToggle.style.fontSize = "";
+                navToggle.style.lineHeight = "";
+            }
         });
     }
 

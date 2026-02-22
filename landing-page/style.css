@@ -84,7 +84,7 @@ h4 {
 }
 
 h1 {
-    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-size: clamp(2rem, 8vw, 4rem);
 }
 
 h2 {
@@ -307,6 +307,9 @@ pre {
     color: var(--text);
     white-space: nowrap;
     overflow-x: auto;
+    flex: 1;
+    min-width: 0;
+    width: 100%;
 }
 
 .install-cmd-hidden {
@@ -435,7 +438,7 @@ pre {
 
 .docs-layout {
     display: grid;
-    grid-template-columns: 220px 1fr;
+    grid-template-columns: 220px minmax(0, 1fr);
     gap: 48px;
     padding-top: 56px;
     min-height: 100vh;
@@ -483,6 +486,7 @@ pre {
 .docs-content {
     padding: 40px 0 80px;
     max-width: 680px;
+    min-width: 0;
 }
 
 .docs-content h1 {
@@ -597,6 +601,9 @@ pre {
     border-collapse: collapse;
     margin-bottom: 24px;
     font-size: 0.9rem;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .docs-content th {
@@ -773,6 +780,10 @@ pre {
         --gutter: 16px;
     }
 
+    .section {
+        padding: 60px 0;
+    }
+
     .nav-links {
         display: none;
         position: absolute;
@@ -782,6 +793,7 @@ pre {
         background: var(--bg);
         border-bottom: 1px solid var(--border);
         flex-direction: column;
+        align-items: center;
         padding: 16px var(--gutter);
         gap: 12px;
     }
@@ -799,7 +811,7 @@ pre {
     }
 
     .docs-layout {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         gap: 0;
     }
 
@@ -811,14 +823,21 @@ pre {
         padding: 24px 0;
     }
 
+    .hero {
+        min-height: auto;
+        padding-top: 100px;
+        padding-bottom: 60px;
+    }
+
     .hero-links {
         flex-direction: column;
+        align-items: center;
         gap: 12px;
     }
 
     .install-cmd {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
         gap: 12px;
     }
 
@@ -828,26 +847,39 @@ pre {
 
     .footer-inner {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        text-align: center;
+        gap: 24px;
     }
 }
 
 @media (max-width: 480px) {
+    .install-header {
+        flex-wrap: wrap;
+    }
+
     .install-tabs {
-        flex-direction: column;
+        width: 100%;
+        order: 2;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .view-script-link {
+        width: 100%;
+        order: 1;
+        text-align: right;
+        padding-top: 0;
+        padding-bottom: 8px;
     }
 
     .install-tab {
-        border-right: 1px solid var(--border);
+        flex: 1;
+        border: 1px solid var(--border);
         border-bottom: none;
     }
 
     .install-tab:first-child {
-        border-right: 1px solid var(--border);
-    }
-
-    .install-tab.active {
-        border-top: none;
-        border-left: 2px solid var(--yellow);
+        border-right: none;
     }
 }
