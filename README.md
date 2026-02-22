@@ -20,7 +20,7 @@ A fast, minimal terminal system monitor for macOS. Built with Rust and [Ratatui]
 ### One-liner (macOS / Linux)
 
 ```sh
-curl -sSL https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/master/install.sh | bash
 ```
 
 ### From source

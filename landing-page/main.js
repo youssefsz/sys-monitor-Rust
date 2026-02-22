@@ -165,4 +165,76 @@
             });
         }
     }
+
+    // ── Script Viewer Modal ──────────────────────────────────────
+
+    var scriptModal = document.getElementById("script-modal");
+    var scriptContent = document.getElementById("script-content");
+    var modalTitle = document.getElementById("modal-title");
+    var viewScriptBtn = document.getElementById("view-script-btn");
+    var modalClose = scriptModal ? scriptModal.querySelector(".modal-close") : null;
+    var modalCopyBtn = document.getElementById("modal-copy-btn");
+
+    if (scriptModal && viewScriptBtn) {
+        viewScriptBtn.addEventListener("click", function () {
+            var activeTab = document.querySelector(".install-tab.active");
+            var scriptName = "install.sh"; // Default
+
+            if (activeTab) {
+                var targetId = activeTab.getAttribute("data-target");
+                if (targetId === "cmd-windows") {
+                    scriptName = "install.ps1";
+                } else {
+                    scriptName = "install.sh";
+                }
+            }
+
+            modalTitle.textContent = "Script Preview: " + scriptName;
+            scriptModal.classList.add("active");
+            scriptContent.textContent = "Loading script...";
+            document.body.style.overflow = "hidden";
+
+            var githubUrl = "https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/master/" + scriptName;
+
+            fetch(githubUrl)
+                .then(function (response) {
+                    if (!response.ok) throw new Error("Could not load script");
+                    return response.text();
+                })
+                .then(function (text) {
+                    scriptContent.textContent = text;
+                })
+                .catch(function () {
+                    scriptContent.textContent = "Error: Failed to load script content.\n\nYou can view it directly on GitHub:\nhttps://github.com/youssefsz/sys-monitor-Rust/blob/master/" + scriptName;
+                });
+        });
+
+        if (modalClose) {
+            modalClose.addEventListener("click", function () {
+                scriptModal.classList.remove("active");
+                document.body.style.overflow = "";
+            });
+        }
+
+        // Close on clic outside
+        scriptModal.addEventListener("click", function (e) {
+            if (e.target === scriptModal) {
+                scriptModal.classList.remove("active");
+                document.body.style.overflow = "";
+            }
+        });
+
+        // Modal copy button
+        if (modalCopyBtn) {
+            modalCopyBtn.addEventListener("click", function () {
+                var text = scriptContent.textContent;
+                navigator.clipboard.writeText(text).then(function () {
+                    modalCopyBtn.textContent = "Copied!";
+                    setTimeout(function () {
+                        modalCopyBtn.textContent = "Copy Script";
+                    }, 2000);
+                });
+            });
+        }
+    }
 })();

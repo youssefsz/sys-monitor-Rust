@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sys-monitor.youssef.tn/sitemap.xml

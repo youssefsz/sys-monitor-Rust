@@ -2,7 +2,7 @@
 set -e
 
 # ── sys-monitor installer ───────────────────────────────────────────────
-# Usage: curl -sSL https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/main/install.sh | bash
+# Usage: curl -sSL https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/master/install.sh | bash
 # ─────────────────────────────────────────────────────────────────────────
 
 REPO="youssefsz/sys-monitor-Rust"

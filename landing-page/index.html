@@ -7,6 +7,36 @@
     <title>sys-monitor - A modern terminal system monitor</title>
     <meta name="description"
         content="A fast, minimal terminal system monitor built with Rust. Real-time CPU, memory, and process monitoring with a clean interface.">
+    <meta name="keywords"
+        content="sys-monitor, system monitor, rust, terminal, top, htop alternative, ratatui, macos, linux, windows">
+    <meta name="author" content="Youssef Dhibi">
+    <link rel="canonical" href="https://sys-monitor.youssef.tn/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sys-monitor.youssef.tn/">
+    <meta property="og:title" content="sys-monitor - A modern terminal system monitor">
+    <meta property="og:description"
+        content="A fast, minimal terminal system monitor built with Rust. Real-time CPU, memory, and process monitoring with a clean interface.">
+    <!-- Replace this with a real screenshot URL ideally -->
+    <meta property="og:image" content="https://sys-monitor.youssef.tn/imgs/og-img/OG.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://sys-monitor.youssef.tn/">
+    <meta name="twitter:title" content="sys-monitor - A modern terminal system monitor">
+    <meta name="twitter:description"
+        content="A fast, minimal terminal system monitor built with Rust. Real-time CPU, memory, and process monitoring with a clean interface.">
+    <meta name="twitter:image" content="https://sys-monitor.youssef.tn/imgs/og-img/OG.png">
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="imgs/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="imgs/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="imgs/favicons/favicon-16x16.png">
+    <link rel="manifest" href="imgs/favicons/site.webmanifest">
+    <link rel="shortcut icon" href="imgs/favicons/favicon.ico">
+    <meta name="theme-color" content="#0a0a0a">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -21,7 +51,8 @@
 
     <nav class="nav">
         <div class="nav-inner">
-            <a href="./" class="nav-brand">sys-monitor</a>
+            <a href="./" class="nav-brand"><span class="nav-chevron">&gt;</span> sys-monitor<span
+                    class="nav-cursor">_</span></a>
             <button class="nav-mobile-toggle" id="nav-toggle" aria-label="Toggle navigation">
                 &#9776;
             </button>
@@ -51,20 +82,23 @@
 
             <!-- Install commands -->
             <div class="install-block">
-                <div class="install-tabs">
-                    <button class="install-tab active" data-target="cmd-unix" id="tab-unix">macOS / Linux</button>
-                    <button class="install-tab" data-target="cmd-windows" id="tab-windows">Windows</button>
+                <div class="install-header">
+                    <div class="install-tabs">
+                        <button class="install-tab active" data-target="cmd-unix" id="tab-unix">macOS / Linux</button>
+                        <button class="install-tab" data-target="cmd-windows" id="tab-windows">Windows</button>
+                    </div>
+                    <button class="view-script-link" id="view-script-btn">View full script</button>
                 </div>
 
                 <div class="install-cmd" id="cmd-unix">
                     <code
-                        id="code-unix">curl -sSL https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/main/install.sh | bash</code>
+                        id="code-unix">curl -sSL https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/master/install.sh | bash</code>
                     <button class="copy-btn" data-clipboard="code-unix">Copy</button>
                 </div>
 
                 <div class="install-cmd install-cmd-hidden" id="cmd-windows">
                     <code
-                        id="code-windows">powershell -Command "irm https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/main/install.ps1 | iex"</code>
+                        id="code-windows">powershell -Command "irm https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/master/install.ps1 | iex"</code>
                     <button class="copy-btn" data-clipboard="code-windows">Copy</button>
                 </div>
             </div>
@@ -136,6 +170,22 @@
             </ul>
         </div>
     </footer>
+
+    <!-- ── Script Viewer Modal ────────────────────────────────────── -->
+    <div id="script-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Script Preview</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <pre id="script-content">Loading...</pre>
+            </div>
+            <div class="modal-footer">
+                <button class="copy-btn" id="modal-copy-btn">Copy Script</button>
+            </div>
+        </div>
+    </div>
 
     <script src="main.js"></script>
 </body>
