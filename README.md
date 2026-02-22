@@ -2,8 +2,7 @@
 
 A fast, minimal terminal system monitor for macOS. Built with Rust and [Ratatui](https://github.com/ratatui/ratatui).
 
-<!-- screenshot placeholder: replace with an actual terminal screenshot -->
-<!-- ![sys-monitor screenshot](docs/screenshot.png) -->
+![sys-monitor screenshot](landing-page/imgs/preview.png)
 
 ## Features
 

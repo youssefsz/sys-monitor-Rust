@@ -43,7 +43,14 @@
     <link rel="stylesheet" href="../style.css">
 </head>
 
-<body>
+<body class="no-scroll">
+
+    <!-- ── Loading Overlay ────────────────────────────────────── -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="terminal-loader">
+            <span class="loader-text">sys-monitor</span><span class="loader-cursor"></span>
+        </div>
+    </div>
 
     <!-- ── Navigation ─────────────────────────────────────────── -->
 
@@ -150,6 +157,18 @@
     </footer>
 
     <script src="../main.js"></script>
+    <script>
+        window.addEventListener("load", function () {
+            var overlay = document.getElementById("loading-overlay");
+            if (overlay) {
+                overlay.classList.add("hidden");
+                setTimeout(function () {
+                    overlay.style.display = "none";
+                }, 500);
+            }
+            document.body.classList.remove("no-scroll");
+        });
+    </script>
 </body>
 
 </html>
