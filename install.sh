@@ -2,10 +2,10 @@
 set -e
 
 # ── sys-monitor installer ───────────────────────────────────────────────
-# Usage: curl -sSL https://raw.githubusercontent.com/YOURUSERNAME/sys-monitor/main/install.sh | bash
+# Usage: curl -sSL https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/main/install.sh | bash
 # ─────────────────────────────────────────────────────────────────────────
 
-REPO="YOURUSERNAME/sys-monitor"   # ← Replace with your GitHub username
+REPO="youssefsz/sys-monitor-Rust"
 BINARY="sys-monitor"
 INSTALL_DIR="/usr/local/bin"
 

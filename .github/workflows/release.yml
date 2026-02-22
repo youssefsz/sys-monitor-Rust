@@ -31,6 +31,10 @@ jobs:
             os: ubuntu-latest
             artifact: sys-monitor-linux-aarch64
 
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            artifact: sys-monitor-windows-x86_64.exe
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -51,10 +55,16 @@ jobs:
         env:
           CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: aarch64-linux-gnu-gcc
 
-      - name: Rename binary
+      - name: Rename binary (Unix)
+        if: runner.os != 'Windows'
         run: |
           cp target/${{ matrix.target }}/release/sys-monitor ${{ matrix.artifact }}
           chmod +x ${{ matrix.artifact }}
+
+      - name: Rename binary (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          cp target/${{ matrix.target }}/release/sys-monitor.exe ${{ matrix.artifact }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
