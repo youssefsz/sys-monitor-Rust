@@ -1,4 +1,4 @@
-# 🖥 sys-monitor — Product Vision
+# sys-monitor - Product Vision
 
 > A modern, elegant, macOS-first terminal system monitor for developers who value clarity and performance.
 
@@ -25,7 +25,7 @@
 
 ## Core Purpose
 
-**sys-monitor** is a terminal-native macOS system monitor that gives developers instant clarity about their machine's performance — without overwhelming them.
+**sys-monitor** is a terminal-native macOS system monitor that gives developers instant clarity about their machine's performance - without overwhelming them.
 
 It is **not**:
 - A clone of `htop`, `btop`, or `glances`
@@ -65,16 +65,16 @@ Existing system monitors fall into one of four failure modes:
 
 | Problem | Examples |
 |---|---|
-| **Too heavy** | Activity Monitor, iStat Menus — full GUI apps with large footprints |
-| **Too cluttered** | `htop`, `glances` — every metric visible at once, no hierarchy |
-| **Too technical** | Raw `/proc` output, `vm_stat` — requires expertise to interpret |
-| **Poorly designed** | Many TUI tools — flickery, inconsistent spacing, cryptic labels |
+| **Too heavy** | Activity Monitor, iStat Menus - full GUI apps with large footprints |
+| **Too cluttered** | `htop`, `glances` - every metric visible at once, no hierarchy |
+| **Too technical** | Raw `/proc` output, `vm_stat` - requires expertise to interpret |
+| **Poorly designed** | Many TUI tools - flickery, inconsistent spacing, cryptic labels |
 
 ### What sys-monitor solves
 
 | Pain Point | Solution |
 |---|---|
-| Information overload | Curated, hierarchical metrics — only what matters |
+| Information overload | Curated, hierarchical metrics - only what matters |
 | Lack of clarity | Color-coded health indicators with instant readability |
 | Slow performance tools | Sub-millisecond render loop, zero-allocation hot path |
 | Poor visual hierarchy | Deliberate layout, typography, and spacing |
@@ -87,31 +87,31 @@ Existing system monitors fall into one of four failure modes:
 
 ```
 1. CLARITY over complexity
-   → Every element has a purpose. No decorative noise.
+   > Every element has a purpose. No decorative noise.
 
 2. SIGNAL over noise
-   → Surface the metrics that matter. Hide the rest.
+   > Surface the metrics that matter. Hide the rest.
 
 3. MINIMALISM over density
-   → Whitespace is a feature, not wasted space.
+   > Whitespace is a feature, not wasted space.
 
 4. PERFORMANCE over decoration
-   → 60fps rendering. Zero lag. Instant startup.
+   > 60fps rendering. Zero lag. Instant startup.
 
 5. PROGRESSIVE DISCLOSURE
-   → Show summaries first. Details on demand.
+   > Show summaries first. Details on demand.
 ```
 
 ### The "3-Second Rule"
 
 When a user launches sys-monitor, they should understand the system's health state within **3 seconds** by scanning:
 
-1. **CPU** — Is it under load? Which cores are stressed?
-2. **Memory** — How close to full? What's the pressure?
-3. **Top processes** — Who's consuming resources?
-4. **Uptime** — How long has the system been running?
+1. **CPU** - Is it under load? Which cores are stressed?
+2. **Memory** - How close to full? What's the pressure?
+3. **Top processes** - Who's consuming resources?
+4. **Uptime** - How long has the system been running?
 
-If the user needs to think, read labels, or decode numbers — the design has failed.
+If the user needs to think, read labels, or decode numbers - the design has failed.
 
 ---
 
@@ -180,22 +180,22 @@ Metrics that fail this test are **excluded** from v1.
 
 ### Behavioral Goals
 
-- **Startup in < 200ms** — The tool should be ready before the user's eyes settle
-- **No scroll needed** — The default view fits in a standard terminal (80×24 minimum, optimized for 120×40)
-- **Keyboard-first** — All navigation via keyboard shortcuts
-- **Graceful resize** — Adapts to any terminal size without breaking layout
-- **Silent by default** — No sounds, no notifications, no popups
+- **Startup in < 200ms** - The tool should be ready before the user's eyes settle
+- **No scroll needed** - The default view fits in a standard terminal (80x24 minimum, optimized for 120x40)
+- **Keyboard-first** - All navigation via keyboard shortcuts
+- **Graceful resize** - Adapts to any terminal size without breaking layout
+- **Silent by default** - No sounds, no notifications, no popups
 
 ### Anti-Goals
 
 These are things sys-monitor will **never** do:
 
-- ❌ Show every possible metric
-- ❌ Require mouse interaction
-- ❌ Use aggressive colors by default
-- ❌ Flash or blink elements
-- ❌ Require configuration to be useful
-- ❌ Block on slow system calls
+- Show every possible metric
+- Require mouse interaction
+- Use aggressive colors by default
+- Flash or blink elements
+- Require configuration to be useful
+- Block on slow system calls
 
 ---
 
@@ -205,11 +205,11 @@ These are things sys-monitor will **never** do:
 
 ```
 Modern macOS terminal aesthetic
-├── Clean rounded borders (Ratatui's Rounded block style)
-├── Balanced inner padding (1-char horizontal, 0-line vertical)
-├── Consistent typography (Unicode box-drawing, no ASCII art)
-├── Soft color accents (muted tones, not saturated primaries)
-└── Dark-first design (optimized for dark terminal themes)
+|-- Clean rounded borders (Ratatui's Rounded block style)
+|-- Balanced inner padding (1-char horizontal, 0-line vertical)
+|-- Consistent typography (Unicode box-drawing, no ASCII art)
+|-- Soft color accents (muted tones, not saturated primaries)
++-- Dark-first design (optimized for dark terminal themes)
 ```
 
 ### Typography Hierarchy
@@ -238,7 +238,7 @@ Modern macOS terminal aesthetic
 ```
 Background:      terminal default (transparent)
 Surface:         terminal default
-Border:          #555555  (DarkGray — subtle, not invisible)
+Border:          #555555  (DarkGray - subtle, not invisible)
 Text Primary:    #E0E0E0  (bright white, not harsh #FFFFFF)
 Text Secondary:  #888888  (dim, for labels and units)
 Text Disabled:   #555555  (for inactive elements)
@@ -247,16 +247,16 @@ Text Disabled:   #555555  (for inactive elements)
 ### Semantic Colors
 
 ```
-Healthy:     #5AEEA0  (soft green  — system is fine)
-Warning:     #F5C842  (warm amber  — attention needed)
-Critical:    #FF6B6B  (soft red    — action required)
-Info:        #64B5F6  (calm blue   — neutral information)
-Accent:      #BB86FC  (soft purple — highlights and focus)
+Healthy:     #5AEEA0  (soft green  - system is fine)
+Warning:     #F5C842  (warm amber  - attention needed)
+Critical:    #FF6B6B  (soft red    - action required)
+Info:        #64B5F6  (calm blue   - neutral information)
+Accent:      #BB86FC  (soft purple - highlights and focus)
 ```
 
 ### Dynamic Color Mapping
 
-Colors shift based on metric thresholds — **not binary, but gradient**:
+Colors shift based on metric thresholds - **not binary, but gradient**:
 
 | Metric | 0-50% | 50-75% | 75-90% | 90-100% |
 |---|---|---|---|---|
@@ -269,9 +269,9 @@ The transition should feel **organic**, not like a traffic light.
 ### Gauge Bar Colors
 
 ```
-CPU gauge fill:    gradient from Healthy → Warning → Critical
-Memory gauge fill: gradient from Healthy → Warning → Critical  
-Swap gauge fill:   gradient from Info → Warning → Critical
+CPU gauge fill:    gradient from Healthy -> Warning -> Critical
+Memory gauge fill: gradient from Healthy -> Warning -> Critical  
+Swap gauge fill:   gradient from Info -> Warning -> Critical
 Empty gauge:       #333333 (dark, recedes visually)
 ```
 
@@ -283,15 +283,15 @@ Empty gauge:       #333333 (dark, recedes visually)
 
 ```
 ╭─ sys-monitor ─────────────────────────────────────────────╮
-│  ◉ MacBook Pro  │  macOS 15.3  │  ↑ 3d 14h  │  ⎔ 1.52   │
+│  MacBook Pro  │  macOS 15.3  │  up 3d 14h  │  load 1.52   │
 ╰───────────────────────────────────────────────────────────╯
 ```
 
-- **sys-monitor** — App name, always visible, sets identity
-- **Hostname** — Machine name for context (especially useful for future SSH)
-- **OS Version** — macOS version
-- **Uptime** — Human-readable (e.g., "3d 14h", not "302400 seconds")
-- **Load average** — 1-minute load, single number
+- **sys-monitor** - App name, always visible, sets identity
+- **Hostname** - Machine name for context (especially useful for future SSH)
+- **OS Version** - macOS version
+- **Uptime** - Human-readable (e.g., "3d 14h", not "302400 seconds")
+- **Load average** - 1-minute load, single number
 
 ### CPU Panel
 
@@ -315,10 +315,10 @@ Empty gauge:       #333333 (dark, recedes visually)
 ╰───────────────────────────────╯
 ```
 
-- **Overall bar** — Aggregated CPU usage, largest and topmost
-- **Per-core bars** — Individual core loads with color-coded fills
-- **Temperature** — CPU package temperature (if available via macOS APIs)
-- **Process/Thread count** — Quick process context
+- **Overall bar** - Aggregated CPU usage, largest and topmost
+- **Per-core bars** - Individual core loads with color-coded fills
+- **Temperature** - CPU package temperature (if available via macOS APIs)
+- **Process/Thread count** - Quick process context
 
 ### Memory Panel
 
@@ -338,14 +338,14 @@ Empty gauge:       #333333 (dark, recedes visually)
 │  Compressed     1.7 GB        │
 │  Cached         4.2 GB        │
 │                               │
-│  Pressure:  ● Normal          │
+│  Pressure:  Normal             │
 ╰───────────────────────────────╯
 ```
 
-- **RAM bar** — Total physical memory usage with absolute values
-- **Swap bar** — Swap usage (warning sign if high)
-- **Breakdown** — macOS-specific memory categories
-- **Pressure indicator** — macOS memory pressure level (Normal / Warn / Critical)
+- **RAM bar** - Total physical memory usage with absolute values
+- **Swap bar** - Swap usage (warning sign if high)
+- **Breakdown** - macOS-specific memory categories
+- **Pressure indicator** - macOS memory pressure level (Normal / Warn / Critical)
 
 ### Process Table
 
@@ -363,15 +363,15 @@ Empty gauge:       #333333 (dark, recedes visually)
 │   832   Finder               1.3%    0.5%   Running        │
 │  2301   Terminal             0.8%    0.3%   Running        │
 │                                                            │
-│  ↑/↓ Navigate  │  s Sort  │  k Kill  │  / Filter          │
+│  Up/Down Navigate  │  s Sort  │  k Kill  │  / Filter       │
 ╰────────────────────────────────────────────────────────────╯
 ```
 
-- **Sorted by CPU% by default** — Most resource-hungry processes first
-- **Color-coded CPU%** — High consumers highlighted in warning/critical colors
-- **Keyboard hints** — Subtle footer showing available interactions
-- **Sortable columns** — Toggle sort by CPU, MEM, PID, Name
-- **Filter** — Quick search by process name
+- **Sorted by CPU% by default** - Most resource-hungry processes first
+- **Color-coded CPU%** - High consumers highlighted in warning/critical colors
+- **Keyboard hints** - Subtle footer showing available interactions
+- **Sortable columns** - Toggle sort by CPU, MEM, PID, Name
+- **Filter** - Quick search by process name
 
 ---
 
@@ -382,9 +382,9 @@ Empty gauge:       #333333 (dark, recedes visually)
 | Key | Action |
 |---|---|
 | `q` / `Esc` | Quit |
-| `↑` / `k` | Move selection up in process table |
-| `↓` / `j` | Move selection down in process table |
-| `s` | Cycle sort column (CPU → MEM → PID → Name) |
+| `Up` / `k` | Move selection up in process table |
+| `Down` / `j` | Move selection down in process table |
+| `s` | Cycle sort column (CPU -> MEM -> PID -> Name) |
 | `S` | Reverse sort order |
 | `/` | Open filter prompt |
 | `Enter` | View process details (future) |
@@ -426,7 +426,7 @@ sys-monitor/
 │   ├── app.rs               # Application state and lifecycle
 │   ├── event.rs             # Keyboard & tick event handling
 │   ├── ui/
-│   │   ├── mod.rs           # UI root — composes all panels
+│   │   ├── mod.rs           # UI root - composes all panels
 │   │   ├── header.rs        # Header bar widget
 │   │   ├── cpu.rs           # CPU panel widget
 │   │   ├── memory.rs        # Memory panel widget
@@ -456,7 +456,7 @@ sys-monitor/
 ```
 ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
 │   System     │     │   App State  │     │   Terminal    │
-│   APIs       │ ──→ │   (struct)   │ ──→ │   Render     │
+│   APIs       │ --> │   (struct)   │ --> │   Render     │
 │              │     │              │     │              │
 │  sysinfo     │     │  cpu_data    │     │  Ratatui     │
 │  mach/libc   │     │  mem_data    │     │  widgets     │
@@ -472,8 +472,8 @@ sys-monitor/
 ```
 loop {
     // 1. Poll for events (keyboard or tick)
-    // 2. Handle keyboard input → update app state
-    // 3. If tick → refresh system data
+    // 2. Handle keyboard input -> update app state
+    // 3. If tick -> refresh system data
     // 4. Render UI from current state
     // 5. Flush to terminal
 }
@@ -495,16 +495,16 @@ Single-threaded, non-blocking, polling-based. No async runtime overhead.
 
 ### Optimization Strategy
 
-- **Differential rendering** — Only redraw changed regions (Ratatui handles this)
-- **Staggered data collection** — Spread syscalls across ticks
-- **Reuse allocations** — Pre-allocated buffers for process list
-- **No unnecessary copies** — Zero-copy string rendering where possible
+- **Differential rendering** - Only redraw changed regions (Ratatui handles this)
+- **Staggered data collection** - Spread syscalls across ticks
+- **Reuse allocations** - Pre-allocated buffers for process list
+- **No unnecessary copies** - Zero-copy string rendering where possible
 
 ---
 
 ## Roadmap
 
-### v0.1 — Foundation (Current)
+### v0.1 - Foundation (Current)
 
 - [ ] Terminal setup & teardown (alternate screen, raw mode)
 - [ ] Basic event loop (keyboard + tick)
@@ -518,7 +518,7 @@ Single-threaded, non-blocking, polling-based. No async runtime overhead.
 - [ ] Graceful resize handling
 - [ ] Clean error handling & panic recovery
 
-### v0.2 — Polish
+### v0.2 - Polish
 
 - [ ] Smooth gauge animations (interpolated fill)
 - [ ] Process filtering (search by name)
@@ -528,7 +528,7 @@ Single-threaded, non-blocking, polling-based. No async runtime overhead.
 - [ ] Sparkline history for CPU (last 60s)
 - [ ] Config file support (`~/.config/sys-monitor/config.toml`)
 
-### v0.3 — macOS Deep Integration
+### v0.3 - macOS Deep Integration
 
 - [ ] CPU temperature via IOKit
 - [ ] Memory pressure via mach APIs
@@ -536,7 +536,7 @@ Single-threaded, non-blocking, polling-based. No async runtime overhead.
 - [ ] Network throughput
 - [ ] Battery status (for MacBooks)
 
-### v1.0 — Release
+### v1.0 - Release
 
 - [ ] Homebrew formula
 - [ ] Man page
@@ -601,9 +601,9 @@ When a user runs `sys-monitor`, they should think:
 > *"This is better than the default."*
 > *"This was built by someone who understands systems."*
 
-When CPU is high → the user should feel **informed**, not panicked.  
-When memory is full → the user should see **clarity**, not alarm.  
-When everything is fine → the user should feel **confident**, not bored.
+When CPU is high - the user should feel **informed**, not panicked.  
+When memory is full - the user should see **clarity**, not alarm.  
+When everything is fine - the user should feel **confident**, not bored.
 
 The tool earns trust through restraint.
 
