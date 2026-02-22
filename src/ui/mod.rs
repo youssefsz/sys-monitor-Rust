@@ -28,7 +28,13 @@ pub fn draw(frame: &mut Frame, app: &mut App) {
 
     // ── Draw widgets ────────────────────────────────────────────────────
     header::draw(frame, &app.data.host, header_area);
-    cpu::draw(frame, &app.data.cpu, app.show_per_core, cpu_area);
+    cpu::draw(
+        frame,
+        &app.data.cpu,
+        app.show_per_core,
+        &mut app.core_scroll_offset,
+        cpu_area,
+    );
     memory::draw(frame, &app.data.memory, mem_area);
     processes::draw(frame, app, proc_area);
 

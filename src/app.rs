@@ -21,6 +21,7 @@ pub struct App {
     pub sort_ascending: bool,
     pub show_help: bool,
     pub show_per_core: bool,
+    pub core_scroll_offset: usize,
     pub filter_mode: bool,
     pub filter_text: String,
 
@@ -51,6 +52,7 @@ impl App {
             sort_ascending: false,
             show_help: false,
             show_per_core: true,
+            core_scroll_offset: 0,
             filter_mode: false,
             filter_text: String::new(),
             collector,
@@ -121,7 +123,23 @@ impl App {
             }
 
             // Toggle per-core view
-            KeyCode::Char('1') => self.show_per_core = !self.show_per_core,
+            KeyCode::Char('1') => {
+                self.show_per_core = !self.show_per_core;
+                self.core_scroll_offset = 0;
+            }
+
+            // Scroll per-core view
+            KeyCode::Char('[') => {
+                if self.show_per_core && self.core_scroll_offset > 0 {
+                    self.core_scroll_offset -= 1;
+                }
+            }
+            KeyCode::Char(']') => {
+                if self.show_per_core {
+                    self.core_scroll_offset += 1;
+                    // Clamp will happen in the UI based on visible slots
+                }
+            }
 
             // Filter
             KeyCode::Char('/') => {

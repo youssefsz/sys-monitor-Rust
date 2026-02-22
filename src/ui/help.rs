@@ -11,7 +11,7 @@ use crate::theme::colors::{ACCENT, TEXT_PRIMARY, TEXT_SECONDARY};
 pub fn draw(frame: &mut Frame, area: Rect) {
     // Size the popup: 50 wide, 18 tall, centered
     let width = 50u16.min(area.width.saturating_sub(4));
-    let height = 18u16.min(area.height.saturating_sub(4));
+    let height = 20u16.min(area.height.saturating_sub(4));
     let x = area.x + (area.width.saturating_sub(width)) / 2;
     let y = area.y + (area.height.saturating_sub(height)) / 2;
     let popup = Rect::new(x, y, width, height);
@@ -36,6 +36,7 @@ pub fn draw(frame: &mut Frame, area: Rect) {
         ("S", "Reverse sort order"),
         ("/", "Filter processes"),
         ("1", "Toggle per-core view"),
+        ("[ / ]", "Scroll cores"),
         ("r", "Force refresh"),
         ("?", "Toggle this help"),
     ];
