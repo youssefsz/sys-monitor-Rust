@@ -43,6 +43,10 @@ struct Cli {
     #[arg(long)]
     no_per_core: bool,
 
+    /// Show developer easter egg
+    #[arg(long, hide = true)]
+    youssef: bool,
+
     #[command(subcommand)]
     command: Option<Commands>,
 }
@@ -57,6 +61,11 @@ enum Commands {
 
 fn main() -> io::Result<()> {
     let cli = Cli::parse();
+
+    if cli.youssef {
+        show_easter_egg();
+        return Ok(());
+    }
 
     // Handle subcommands before entering TUI mode
     if let Some(Commands::Upgrade) = cli.command {
@@ -143,4 +152,38 @@ fn self_upgrade() -> io::Result<()> {
     }
 
     Ok(())
+}
+
+fn show_easter_egg() {
+    let art = [
+        "      0000000000000000000",
+        "      0111111111111111110",
+        "      0111111111111111110",
+        "      0111221112211111110       SYS-MONITOR",
+        "      0112222122221111110",
+        "      0112222222221111110       Created by:",
+        "      0111222222211111110",
+        "      0111122222111111110       Youssef Dhibi",
+        "      0111112221111111110",
+        "      0111111211111111110",
+        "      0111111111111111110",
+        "      0000000000000000000",
+        "             000         ",
+        "          000000000      ",
+    ];
+
+    println!("\n");
+    for row in art {
+        for c in row.chars() {
+            match c {
+                '0' => print!("\x1b[48;5;28m  \x1b[0m"), // Dark green outline
+                '1' => print!("\x1b[48;5;236m  \x1b[0m"), // Dark gray screen
+                '2' => print!("\x1b[48;5;196m  \x1b[0m"), // Red heart
+                ' ' => print!(" "),
+                _ => print!("\x1b[38;5;226m\x1b[1m{}\x1b[0m", c), // Yellow text
+            }
+        }
+        println!();
+    }
+    println!("\n");
 }
