@@ -9,6 +9,8 @@ A fast, minimal terminal system monitor for macOS. Built with Rust and [Ratatui]
 - **CPU overview** - Aggregate usage bar with optional per-core breakdown
 - **Memory panel** - RAM and swap usage with human-readable values
 - **Process table** - Top processes sorted by CPU/MEM, filterable by name
+- **Process actions** - Kill, force-kill, copy PID, and open file location via dedicated menu
+- **Process tree** - Full-screen interactive tree view showing ancestor chains and children
 - **Host info** - Hostname, OS version, uptime, and load averages
 - **Color-coded severity** - Smooth gradient from green to red based on utilization
 - **Keyboard-driven** - Full navigation without a mouse
@@ -52,8 +54,9 @@ sys-monitor --no-per-core       # hide per-core CPU bars
 | Key | Action |
 |---|---|
 | `q` / `Esc` | Quit |
-| `j` / `k` | Navigate process table |
+| `j` / `k` / `Up` / `Down` | Navigate process table / process tree |
 | `g` / `G` | Jump to first / last process |
+| `Enter` | Open process actions menu or interact with process tree |
 | `s` | Cycle sort column (CPU > MEM > PID > Name) |
 | `S` | Reverse sort order |
 | `/` | Filter processes by name |
@@ -83,6 +86,7 @@ src/
 | System metrics | [sysinfo](https://crates.io/crates/sysinfo) 0.38 |
 | CLI parsing | [clap](https://crates.io/crates/clap) 4.5 |
 | macOS APIs | [libc](https://crates.io/crates/libc) 0.2 |
+| Clipboard support | [arboard](https://crates.io/crates/arboard) 3.6 |
 
 ## Contributing
 
