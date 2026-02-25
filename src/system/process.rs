@@ -2,9 +2,12 @@ use sysinfo::{Process, System};
 
 /// A single row in the process table.
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct ProcessInfo {
     pub pid: u32,
     pub name: String,
+    pub exe_path: Option<String>,
+    pub parent_pid: Option<u32>,
     pub cpu_percent: f64,
     pub mem_bytes: u64,
     pub mem_percent: f64,
@@ -69,9 +72,17 @@ pub fn collect_processes(
         })
         .map(|p| {
             let mem = p.memory();
+            let exe_path = p
+                .exe()
+                .map(|path| path.to_string_lossy().to_string())
+                .filter(|s| !s.is_empty());
+            let parent_pid = p.parent().map(|pid| pid.as_u32());
+
             ProcessInfo {
                 pid: p.pid().as_u32(),
                 name: p.name().to_string_lossy().to_string(),
+                exe_path,
+                parent_pid,
                 cpu_percent: p.cpu_usage() as f64,
                 mem_bytes: mem,
                 mem_percent: if total_mem > 0.0 {

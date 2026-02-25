@@ -20,11 +20,19 @@ pub enum ProcessAction {
     Kill,
     ForceKill,
     CopyPid,
+    OpenFileLocation,
+    ProcessTree,
 }
 
 impl ProcessAction {
     /// All actions in display order.
-    pub const ALL: [Self; 3] = [Self::Kill, Self::ForceKill, Self::CopyPid];
+    pub const ALL: [Self; 5] = [
+        Self::Kill,
+        Self::ForceKill,
+        Self::CopyPid,
+        Self::OpenFileLocation,
+        Self::ProcessTree,
+    ];
 
     /// Human-readable label shown in the menu.
     pub fn label(self) -> &'static str {
@@ -32,6 +40,8 @@ impl ProcessAction {
             Self::Kill => "Kill Process  (SIGTERM)",
             Self::ForceKill => "Force Kill    (SIGKILL)",
             Self::CopyPid => "Copy PID",
+            Self::OpenFileLocation => "Open File Location",
+            Self::ProcessTree => "Process Tree",
         }
     }
 }
@@ -87,6 +97,17 @@ impl ProcessMenu {
     }
 }
 
+// ── Process Tree Node ───────────────────────────────────────────────────
+
+/// A single node in the process tree view.
+#[derive(Debug, Clone)]
+pub struct TreeNode {
+    pub pid: u32,
+    pub name: String,
+    pub depth: i32,
+    pub is_target: bool,
+}
+
 // ── Central App State ───────────────────────────────────────────────────
 
 /// Central application state — owns data, selection, and UI modes.
@@ -102,6 +123,19 @@ pub struct App {
     pub filter_mode: bool,
     pub filter_text: String,
     pub process_menu: ProcessMenu,
+
+    /// Whether the full-screen process tree view is active.
+    pub show_process_tree: bool,
+    /// Tree nodes for the full-screen tree view.
+    pub tree_nodes: Vec<TreeNode>,
+    /// Currently selected index in tree_nodes.
+    pub tree_selected: usize,
+    /// Scroll offset for the tree view.
+    pub tree_scroll: usize,
+    /// The original target PID that opened the tree.
+    pub tree_origin_pid: u32,
+    /// The original target name that opened the tree.
+    pub tree_origin_name: String,
 
     collector: SystemCollector,
     last_refresh: Instant,
@@ -134,6 +168,12 @@ impl App {
             filter_mode: false,
             filter_text: String::new(),
             process_menu: ProcessMenu::new(),
+            show_process_tree: false,
+            tree_nodes: Vec::new(),
+            tree_selected: 0,
+            tree_scroll: 0,
+            tree_origin_pid: 0,
+            tree_origin_name: String::new(),
             collector,
             last_refresh: Instant::now(),
         }
@@ -173,6 +213,17 @@ impl App {
 
     /// Processes a key event and updates app state.
     pub fn handle_key(&mut self, key: KeyEvent) {
+        // Full-screen tree view takes top priority.
+        if self.show_process_tree {
+            // If the menu is visible on top of the tree, handle menu keys.
+            if self.process_menu.visible {
+                self.handle_menu_key(key);
+            } else {
+                self.handle_tree_key(key);
+            }
+            return;
+        }
+
         // Process menu takes priority when visible.
         if self.process_menu.visible {
             self.handle_menu_key(key);
@@ -225,7 +276,6 @@ impl App {
             KeyCode::Char(']') => {
                 if self.show_per_core {
                     self.core_scroll_offset += 1;
-                    // Clamp will happen in the UI based on visible slots
                 }
             }
 
@@ -278,12 +328,19 @@ impl App {
         }
     }
 
+    /// Opens the process action menu for a specific PID and name.
+    fn open_menu_for(&mut self, pid: u32, name: String) {
+        self.process_menu.open(pid, name);
+    }
+
     /// Handles key events while the process action menu is open.
     fn handle_menu_key(&mut self, key: KeyEvent) {
         // If showing feedback, any key closes the menu.
         if self.process_menu.feedback.is_some() {
             self.process_menu.close();
-            self.force_refresh();
+            if !self.show_process_tree {
+                self.force_refresh();
+            }
             return;
         }
 
@@ -326,6 +383,12 @@ impl App {
             ProcessAction::CopyPid => {
                 self.copy_pid_to_clipboard();
             }
+            ProcessAction::OpenFileLocation => {
+                self.open_file_location();
+            }
+            ProcessAction::ProcessTree => {
+                self.enter_process_tree();
+            }
         }
     }
 
@@ -335,7 +398,7 @@ impl App {
         let result = match self.process_menu.current_action() {
             ProcessAction::Kill => self.collector.terminate_process(pid),
             ProcessAction::ForceKill => self.collector.force_kill_process(pid),
-            ProcessAction::CopyPid => unreachable!(),
+            _ => unreachable!(),
         };
 
         let feedback = match result {
@@ -360,6 +423,115 @@ impl App {
             Err(e) => format!("✗ Clipboard unavailable: {e}"),
         };
         self.process_menu.feedback = Some(feedback);
+    }
+
+    /// Opens the file location of the target process in Finder (macOS).
+    fn open_file_location(&mut self) {
+        let pid = self.process_menu.target_pid;
+
+        // Look up the exe_path from the current process list.
+        let exe_path = self
+            .data
+            .processes
+            .iter()
+            .find(|p| p.pid == pid)
+            .and_then(|p| p.exe_path.clone());
+
+        let feedback = match exe_path {
+            Some(path) => {
+                match std::process::Command::new("open")
+                    .arg("-R")
+                    .arg(&path)
+                    .spawn()
+                {
+                    Ok(_) => format!("✓ Revealed: {}", path),
+                    Err(e) => format!("✗ Failed to open Finder: {e}"),
+                }
+            }
+            None => "✗ Executable path not available".to_string(),
+        };
+        self.process_menu.feedback = Some(feedback);
+    }
+
+    // ── Process tree (full-screen) ──────────────────────────────────────
+
+    /// Builds the process tree and enters the full-screen tree view.
+    fn enter_process_tree(&mut self) {
+        let pid = self.process_menu.target_pid;
+        let name = self.process_menu.target_name.clone();
+        let tree = self.collector.process_tree(pid);
+
+        if tree.is_empty() {
+            self.process_menu.feedback = Some("✗ Could not build process tree".to_string());
+            return;
+        }
+
+        // Find the minimum depth to normalize indentation.
+        let min_depth = tree.iter().map(|(_, _, d)| *d).min().unwrap_or(0);
+
+        let nodes: Vec<TreeNode> = tree
+            .iter()
+            .map(|(p, n, depth)| TreeNode {
+                pid: *p,
+                name: n.clone(),
+                depth: depth - min_depth,
+                is_target: *depth == 0,
+            })
+            .collect();
+
+        // Find the index of the target process to pre-select it.
+        let target_idx = nodes.iter().position(|n| n.is_target).unwrap_or(0);
+
+        // Close the popup menu and switch to full-screen tree.
+        self.process_menu.close();
+        self.tree_nodes = nodes;
+        self.tree_selected = target_idx;
+        self.tree_scroll = 0;
+        self.tree_origin_pid = pid;
+        self.tree_origin_name = name;
+        self.show_process_tree = true;
+    }
+
+    /// Handles key events while the full-screen tree view is active.
+    fn handle_tree_key(&mut self, key: KeyEvent) {
+        match key.code {
+            // Close tree view
+            KeyCode::Esc | KeyCode::Char('q') => {
+                self.show_process_tree = false;
+                self.tree_nodes.clear();
+                self.tree_selected = 0;
+                self.tree_scroll = 0;
+            }
+
+            // Navigate selection
+            KeyCode::Down | KeyCode::Char('j') => {
+                if !self.tree_nodes.is_empty() {
+                    self.tree_selected = (self.tree_selected + 1).min(self.tree_nodes.len() - 1);
+                }
+            }
+            KeyCode::Up | KeyCode::Char('k') => {
+                self.tree_selected = self.tree_selected.saturating_sub(1);
+            }
+            KeyCode::Home | KeyCode::Char('g') => {
+                self.tree_selected = 0;
+            }
+            KeyCode::End | KeyCode::Char('G') => {
+                if !self.tree_nodes.is_empty() {
+                    self.tree_selected = self.tree_nodes.len() - 1;
+                }
+            }
+
+            // Open action menu for the selected tree node
+            KeyCode::Enter => {
+                if let Some(node) = self.tree_nodes.get(self.tree_selected) {
+                    let pid = node.pid;
+                    let name = node.name.clone();
+                    self.open_menu_for(pid, name);
+                }
+            }
+
+            _ => {}
+        }
     }
 
     // ── Selection helpers ───────────────────────────────────────────────

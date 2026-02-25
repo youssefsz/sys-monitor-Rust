@@ -13,13 +13,14 @@ pub fn draw(frame: &mut Frame, app: &App, area: Rect) {
     let menu = &app.process_menu;
 
     // ── Popup dimensions ────────────────────────────────────────────────
-    let width = 44u16.min(area.width.saturating_sub(4));
+    let width = 50u16.min(area.width.saturating_sub(4));
     let height = if menu.feedback.is_some() {
         8
     } else if menu.confirm_mode {
         9
     } else {
-        10
+        // 5 actions + 2 padding + 2 hints + 3 border/padding = 12
+        12
     }
     .min(area.height.saturating_sub(4));
 
@@ -41,8 +42,9 @@ pub fn draw(frame: &mut Frame, app: &App, area: Rect) {
         .padding(Padding::new(2, 2, 1, 0));
 
     // ── Content ──────────────────────────────────────────────────────────
+
+    // Feedback view (success/error message)
     if let Some(ref feedback) = menu.feedback {
-        // Show feedback message
         let color = if feedback.starts_with('✓') {
             HEALTHY
         } else {
@@ -61,12 +63,12 @@ pub fn draw(frame: &mut Frame, app: &App, area: Rect) {
         return;
     }
 
+    // Confirmation view
     if menu.confirm_mode {
-        // Show confirmation prompt
         let action_label = match menu.current_action() {
             ProcessAction::Kill => "Kill",
             ProcessAction::ForceKill => "Force kill",
-            ProcessAction::CopyPid => unreachable!(),
+            _ => unreachable!(),
         };
 
         let lines = vec![

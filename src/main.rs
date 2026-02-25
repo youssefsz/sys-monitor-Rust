@@ -102,7 +102,11 @@ fn run(
 
         match event::poll(tick_rate)? {
             AppEvent::Key(key) => {
-                if is_quit(&key) && !app.filter_mode && !app.process_menu.visible {
+                if is_quit(&key)
+                    && !app.filter_mode
+                    && !app.process_menu.visible
+                    && !app.show_process_tree
+                {
                     app.running = false;
                 } else {
                     app.handle_key(key);
