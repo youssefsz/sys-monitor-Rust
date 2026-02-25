@@ -5,8 +5,10 @@ edition = "2024"
 license = "MIT"
 
 [dependencies]
+arboard = "3.6.1"
 clap = { version = "4.5.60", features = ["derive"] }
 crossterm = "0.29"
 libc = "0.2.182"
 ratatui = "0.30.0"
 sysinfo = "0.38.2"
+

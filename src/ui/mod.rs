@@ -7,6 +7,7 @@ mod cpu;
 mod header;
 mod help;
 mod memory;
+mod process_menu;
 mod processes;
 
 /// Renders the entire dashboard for a single frame.
@@ -38,8 +39,11 @@ pub fn draw(frame: &mut Frame, app: &mut App) {
     memory::draw(frame, &app.data.memory, mem_area);
     processes::draw(frame, app, proc_area);
 
-    // ── Help overlay (on top if active) ─────────────────────────────────
+    // ── Overlays (on top if active) ──────────────────────────────────────
     if app.show_help {
         help::draw(frame, area);
+    }
+    if app.process_menu.visible {
+        process_menu::draw(frame, app, area);
     }
 }

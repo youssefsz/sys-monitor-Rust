@@ -4,13 +4,90 @@ use crossterm::event::{KeyCode, KeyEvent};
 use ratatui::widgets::TableState;
 
 use crate::system::process::SortColumn;
-use crate::system::{SystemCollector, SystemData};
+use crate::system::{KillResult, SystemCollector, SystemData};
 
 /// How often system data is refreshed.
 const DATA_REFRESH_INTERVAL: Duration = Duration::from_secs(1);
 
 /// Maximum number of process rows to collect.
 const MAX_PROCESS_ROWS: usize = 100;
+
+// ── Process Action Menu ─────────────────────────────────────────────────
+
+/// Actions available in the process context menu.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ProcessAction {
+    Kill,
+    ForceKill,
+    CopyPid,
+}
+
+impl ProcessAction {
+    /// All actions in display order.
+    pub const ALL: [Self; 3] = [Self::Kill, Self::ForceKill, Self::CopyPid];
+
+    /// Human-readable label shown in the menu.
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::Kill => "Kill Process  (SIGTERM)",
+            Self::ForceKill => "Force Kill    (SIGKILL)",
+            Self::CopyPid => "Copy PID",
+        }
+    }
+}
+
+/// State of the process action popup menu.
+pub struct ProcessMenu {
+    /// Whether the menu is currently visible.
+    pub visible: bool,
+    /// Index into `ProcessAction::ALL` for the highlighted action.
+    pub selected: usize,
+    /// PID of the target process.
+    pub target_pid: u32,
+    /// Name of the target process (for display).
+    pub target_name: String,
+    /// Whether awaiting kill confirmation.
+    pub confirm_mode: bool,
+    /// Feedback message shown after an action (e.g. "✓ Killed").
+    pub feedback: Option<String>,
+}
+
+impl ProcessMenu {
+    fn new() -> Self {
+        Self {
+            visible: false,
+            selected: 0,
+            target_pid: 0,
+            target_name: String::new(),
+            confirm_mode: false,
+            feedback: None,
+        }
+    }
+
+    /// Opens the menu for a specific process.
+    fn open(&mut self, pid: u32, name: String) {
+        self.visible = true;
+        self.selected = 0;
+        self.target_pid = pid;
+        self.target_name = name;
+        self.confirm_mode = false;
+        self.feedback = None;
+    }
+
+    /// Closes the menu and resets all state.
+    fn close(&mut self) {
+        self.visible = false;
+        self.confirm_mode = false;
+        self.feedback = None;
+    }
+
+    /// Returns the currently highlighted action.
+    pub fn current_action(&self) -> ProcessAction {
+        ProcessAction::ALL[self.selected]
+    }
+}
+
+// ── Central App State ───────────────────────────────────────────────────
 
 /// Central application state — owns data, selection, and UI modes.
 pub struct App {
@@ -24,6 +101,7 @@ pub struct App {
     pub core_scroll_offset: usize,
     pub filter_mode: bool,
     pub filter_text: String,
+    pub process_menu: ProcessMenu,
 
     collector: SystemCollector,
     last_refresh: Instant,
@@ -55,6 +133,7 @@ impl App {
             core_scroll_offset: 0,
             filter_mode: false,
             filter_text: String::new(),
+            process_menu: ProcessMenu::new(),
             collector,
             last_refresh: Instant::now(),
         }
@@ -94,6 +173,12 @@ impl App {
 
     /// Processes a key event and updates app state.
     pub fn handle_key(&mut self, key: KeyEvent) {
+        // Process menu takes priority when visible.
+        if self.process_menu.visible {
+            self.handle_menu_key(key);
+            return;
+        }
+
         if self.filter_mode {
             self.handle_filter_key(key);
             return;
@@ -111,6 +196,9 @@ impl App {
             KeyCode::Up | KeyCode::Char('k') => self.select_prev(),
             KeyCode::Home | KeyCode::Char('g') => self.select_first(),
             KeyCode::End | KeyCode::Char('G') => self.select_last(),
+
+            // Open process action menu
+            KeyCode::Enter => self.open_process_menu(),
 
             // Sort
             KeyCode::Char('s') => {
@@ -177,6 +265,101 @@ impl App {
             }
             _ => {}
         }
+    }
+
+    // ── Process menu ────────────────────────────────────────────────────
+
+    /// Opens the process action menu for the currently selected process.
+    fn open_process_menu(&mut self) {
+        if let Some(idx) = self.table_state.selected() {
+            if let Some(proc) = self.data.processes.get(idx) {
+                self.process_menu.open(proc.pid, proc.name.clone());
+            }
+        }
+    }
+
+    /// Handles key events while the process action menu is open.
+    fn handle_menu_key(&mut self, key: KeyEvent) {
+        // If showing feedback, any key closes the menu.
+        if self.process_menu.feedback.is_some() {
+            self.process_menu.close();
+            self.force_refresh();
+            return;
+        }
+
+        // Confirmation mode: waiting for y/Enter or n/Esc.
+        if self.process_menu.confirm_mode {
+            match key.code {
+                KeyCode::Enter | KeyCode::Char('y') | KeyCode::Char('Y') => {
+                    self.execute_kill();
+                }
+                KeyCode::Esc | KeyCode::Char('n') | KeyCode::Char('N') => {
+                    self.process_menu.confirm_mode = false;
+                }
+                _ => {}
+            }
+            return;
+        }
+
+        // Normal menu navigation.
+        match key.code {
+            KeyCode::Down | KeyCode::Char('j') => {
+                let count = ProcessAction::ALL.len();
+                self.process_menu.selected = (self.process_menu.selected + 1) % count;
+            }
+            KeyCode::Up | KeyCode::Char('k') => {
+                let count = ProcessAction::ALL.len();
+                self.process_menu.selected = (self.process_menu.selected + count - 1) % count;
+            }
+            KeyCode::Enter => self.execute_menu_action(),
+            KeyCode::Esc => self.process_menu.close(),
+            _ => {}
+        }
+    }
+
+    /// Dispatches the currently selected menu action.
+    fn execute_menu_action(&mut self) {
+        match self.process_menu.current_action() {
+            ProcessAction::Kill | ProcessAction::ForceKill => {
+                self.process_menu.confirm_mode = true;
+            }
+            ProcessAction::CopyPid => {
+                self.copy_pid_to_clipboard();
+            }
+        }
+    }
+
+    /// Performs the actual kill/force-kill after confirmation.
+    fn execute_kill(&mut self) {
+        let pid = self.process_menu.target_pid;
+        let result = match self.process_menu.current_action() {
+            ProcessAction::Kill => self.collector.terminate_process(pid),
+            ProcessAction::ForceKill => self.collector.force_kill_process(pid),
+            ProcessAction::CopyPid => unreachable!(),
+        };
+
+        let feedback = match result {
+            KillResult::Success => "✓ Signal sent successfully".to_string(),
+            KillResult::NotFound => "✗ Process not found (already exited?)".to_string(),
+            KillResult::Unsupported => "✗ Signal not supported on this platform".to_string(),
+            KillResult::Failed => "✗ Failed (permission denied?)".to_string(),
+        };
+
+        self.process_menu.confirm_mode = false;
+        self.process_menu.feedback = Some(feedback);
+    }
+
+    /// Copies the target PID to the system clipboard.
+    fn copy_pid_to_clipboard(&mut self) {
+        let pid_str = self.process_menu.target_pid.to_string();
+        let feedback = match arboard::Clipboard::new() {
+            Ok(mut clipboard) => match clipboard.set_text(&pid_str) {
+                Ok(()) => format!("✓ PID {} copied to clipboard", pid_str),
+                Err(e) => format!("✗ Clipboard error: {e}"),
+            },
+            Err(e) => format!("✗ Clipboard unavailable: {e}"),
+        };
+        self.process_menu.feedback = Some(feedback);
     }
 
     // ── Selection helpers ───────────────────────────────────────────────

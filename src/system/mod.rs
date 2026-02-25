@@ -3,7 +3,9 @@ pub mod host;
 pub mod memory;
 pub mod process;
 
-use sysinfo::{CpuRefreshKind, MemoryRefreshKind, ProcessRefreshKind, RefreshKind, System};
+use sysinfo::{
+    CpuRefreshKind, MemoryRefreshKind, Pid, ProcessRefreshKind, RefreshKind, Signal, System,
+};
 
 use self::cpu::CpuData;
 use self::host::HostInfo;
@@ -17,6 +19,18 @@ pub struct SystemData {
     pub cpu: CpuData,
     pub memory: MemoryData,
     pub processes: Vec<ProcessInfo>,
+}
+
+/// Result of a process kill attempt.
+pub enum KillResult {
+    /// Signal was sent successfully.
+    Success,
+    /// The process was not found (may have already exited).
+    NotFound,
+    /// The signal is not supported on this platform.
+    Unsupported,
+    /// The signal could not be sent (e.g. permission denied).
+    Failed,
 }
 
 /// Owns the `sysinfo::System` instance and provides a clean refresh API.
@@ -59,6 +73,37 @@ impl SystemCollector {
                 filter,
                 max_process_rows,
             ),
+        }
+    }
+
+    /// Sends a graceful termination signal (`SIGTERM` on Unix, `TerminateProcess`
+    /// on Windows) to the process with the given PID.
+    pub fn terminate_process(&mut self, pid: u32) -> KillResult {
+        let sysinfo_pid = Pid::from_u32(pid);
+        match self.sys.process(sysinfo_pid) {
+            Some(proc) => match proc.kill_with(Signal::Term) {
+                Some(true) => KillResult::Success,
+                Some(false) => KillResult::Failed,
+                None => KillResult::Unsupported,
+            },
+            None => KillResult::NotFound,
+        }
+    }
+
+    /// Sends a forceful kill signal (`SIGKILL` on Unix, `TerminateProcess` on
+    /// Windows) to the process with the given PID. This is guaranteed to be
+    /// supported on all platforms.
+    pub fn force_kill_process(&mut self, pid: u32) -> KillResult {
+        let sysinfo_pid = Pid::from_u32(pid);
+        match self.sys.process(sysinfo_pid) {
+            Some(proc) => {
+                if proc.kill() {
+                    KillResult::Success
+                } else {
+                    KillResult::Failed
+                }
+            }
+            None => KillResult::NotFound,
         }
     }
 }

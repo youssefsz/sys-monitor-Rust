@@ -95,6 +95,8 @@ pub fn draw(frame: &mut Frame, app: &mut App, area: Rect) {
     let hint = Line::from(vec![
         Span::styled(" ↑/↓", Theme::value()),
         Span::styled(" Navigate  ", Theme::label()),
+        Span::styled("Enter", Theme::value()),
+        Span::styled(" Actions  ", Theme::label()),
         Span::styled("s", Theme::value()),
         Span::styled(" Sort  ", Theme::label()),
         Span::styled("S", Theme::value()),
