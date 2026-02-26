@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use crossterm::event::{self, Event as CtEvent, KeyCode, KeyEvent, KeyModifiers};
+use crossterm::event::{self, Event as CtEvent, KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
 
 /// Application-level events produced by the event poller.
 #[allow(dead_code)]
@@ -20,9 +20,11 @@ pub enum AppEvent {
 pub fn poll(tick_rate: Duration) -> std::io::Result<AppEvent> {
     if event::poll(tick_rate)? {
         match event::read()? {
-            CtEvent::Key(key) => Ok(AppEvent::Key(key)),
+            // On Windows, crossterm emits Press, Release, and Repeat events.
+            // We only care about Press; ignoring the rest prevents double input.
+            CtEvent::Key(key) if key.kind == KeyEventKind::Press => Ok(AppEvent::Key(key)),
             CtEvent::Resize(w, h) => Ok(AppEvent::Resize(w, h)),
-            // Ignore mouse / focus / paste events
+            // Ignore mouse / focus / paste / key-release events
             _ => Ok(AppEvent::Tick),
         }
     } else {
