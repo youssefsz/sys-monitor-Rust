@@ -205,12 +205,16 @@ sys-monitor --no-per-core        # aggregate CPU only</pre>
                         <td>Quit</td>
                     </tr>
                     <tr>
-                        <td><code>j</code> / <code>k</code></td>
-                        <td>Navigate process table up/down</td>
+                        <td><code>j</code> / <code>k</code> / <code>Up</code> / <code>Down</code></td>
+                        <td>Navigate process table / process tree</td>
                     </tr>
                     <tr>
                         <td><code>g</code> / <code>G</code></td>
                         <td>Jump to first / last process</td>
+                    </tr>
+                    <tr>
+                        <td><code>Enter</code></td>
+                        <td>Open process actions menu or interact with process tree</td>
                     </tr>
                     <tr>
                         <td><code>s</code></td>
@@ -269,6 +273,17 @@ sys-monitor --no-per-core        # aggregate CPU only</pre>
                 sortable, and filterable.
             </p>
 
+            <h3>Process actions</h3>
+            <p>
+                Press <code>Enter</code> on a process to open a dedicated menu to kill, force-kill, copy PID, or open
+                the file location.
+            </p>
+
+            <h3>Process tree</h3>
+            <p>
+                A full-screen interactive tree view showing ancestor chains and children of processes.
+            </p>
+
             <!-- ── Architecture ──────────────────────────────────────── -->
 
             <h2 id="architecture">Architecture</h2>
@@ -323,6 +338,10 @@ sys-monitor --no-per-core        # aggregate CPU only</pre>
                     <tr>
                         <td>macOS APIs</td>
                         <td>libc 0.2</td>
+                    </tr>
+                    <tr>
+                        <td>Clipboard support</td>
+                        <td>arboard 3.6</td>
                     </tr>
                 </tbody>
             </table>
