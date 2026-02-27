@@ -77,8 +77,22 @@ Write-Host "-> Downloaded successfully" -ForegroundColor Green
 # ── Install ──────────────────────────────────────────────────────────────
 Write-Host "-> Installing to $installDir..."
 
+$destPath = Join-Path $installDir $binary
+$oldPath  = "$destPath.old"
+
 try {
-    Move-Item -Path $tmpFile -Destination (Join-Path $installDir $binary) -Force
+    # Windows locks running executables – rename the old binary first
+    if (Test-Path $destPath) {
+        if (Test-Path $oldPath) { Remove-Item $oldPath -Force }
+        Rename-Item -Path $destPath -NewName "$binary.old" -Force
+    }
+
+    Move-Item -Path $tmpFile -Destination $destPath -Force
+
+    # Clean up the old binary (best-effort; may still be locked)
+    if (Test-Path $oldPath) {
+        try { Remove-Item $oldPath -Force } catch { }
+    }
 } catch {
     # Clean up temp file on failure
     if (Test-Path $tmpFile) { Remove-Item $tmpFile -Force }
