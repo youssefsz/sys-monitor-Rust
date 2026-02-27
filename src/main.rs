@@ -22,9 +22,6 @@ use event::{AppEvent, is_quit};
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
-const INSTALL_URL: &str =
-    "https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/master/install.sh";
-
 // ── CLI definition ──────────────────────────────────────────────────────
 
 #[derive(Parser)]
@@ -139,16 +136,28 @@ fn self_upgrade() -> io::Result<()> {
     println!("  Current version: v{VERSION}");
     println!();
 
-    let status = Command::new("bash")
-        .args(["-c", &format!("curl -sSL {INSTALL_URL} | bash")])
-        .status()?;
+    #[cfg(target_os = "windows")]
+    let (cmd, args, manual) = (
+        "powershell",
+        ["-Command", "irm https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/master/install.ps1 | iex"].as_slice(),
+        "powershell -Command \"irm https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/master/install.ps1 | iex\"",
+    );
+
+    #[cfg(not(target_os = "windows"))]
+    let (cmd, args, manual) = (
+        "bash",
+        ["-c", "curl -sSL https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/master/install.sh | bash"].as_slice(),
+        "curl -sSL https://raw.githubusercontent.com/youssefsz/sys-monitor-Rust/master/install.sh | bash",
+    );
+
+    let status = Command::new(cmd).args(args).status()?;
 
     if status.success() {
         println!();
         println!("✓ Upgrade complete!");
     } else {
         eprintln!("✗ Upgrade failed. Try manually:");
-        eprintln!("  curl -sSL {INSTALL_URL} | bash");
+        eprintln!("  {manual}");
     }
 
     Ok(())
